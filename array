@@ -1,0 +1,23 @@
+# 1. 초기 배열 설정
+data = [10, 20, 30, 40, 50]
+n = len(data)
+
+print(f"회전 전: {data}")
+
+# 2. 오른쪽으로 한 칸 회전하는 로직
+# 마지막 요소를 임시 변수에 저장
+temp = data[n - 1]
+
+# 뒤에서부터 앞으로 순회하며 값을 한 칸씩 밀기
+for i in range(n - 1, 0, -1):
+    data[i] = data[i - 1]
+
+# 저장해둔 마지막 값을 맨 앞으로 이동
+data[0] = temp
+
+# 3. 합계 계산
+total_sum = sum(data)
+
+# 4. 결과 출력
+print(f"회전 후: {data}")
+print(f"배열 총합: {total_sum}")

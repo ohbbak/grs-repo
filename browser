@@ -1,0 +1,57 @@
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+
+public class FileUtil {
+
+    /**
+     * 브라우저 종류에 따라 한글 파일명이 깨지지 않도록 인코딩하는 메서드
+     * @param filename 원본 한글 파일명 (예: "결과보고서.pdf")
+     * @param userAgent 브라우저 정보 (HttpServletRequest.getHeader("User-Agent") 값)
+     * @return 인코딩된 파일명 문자열
+     */
+    public static String getDisposition(String filename, String userAgent) {
+        String encodedFilename = "";
+        
+        try {
+            // 브라우저 정보(User-Agent)를 확인하여 알맞게 인코딩
+            if (userAgent.contains("MSIE") || userAgent.contains("Trident")) {
+                // 인터넷 익스플로러 (IE) 계열 처리
+                encodedFilename = URLEncoder.encode(filename, "UTF-8").replaceAll("\\+", "%20");
+            } else if (userAgent.contains("Firefox")) {
+                // 파이어폭스 처리
+                encodedFilename = "\"" + new String(filename.getBytes("UTF-8"), "8859_1") + "\"";
+            } else if (userAgent.contains("Opera")) {
+                // 오페라 처리
+                encodedFilename = "\"" + new String(filename.getBytes("UTF-8"), "8859_1") + "\"";
+            } else if (userAgent.contains("Chrome") || userAgent.contains("Safari") || userAgent.contains("Edg")) {
+                // 크롬, 사파리, 마이크로소프트 엣지 처리 (가장 많이 쓰임)
+                encodedFilename = URLEncoder.encode(filename, "UTF-8").replaceAll("\\+", "%20");
+            } else {
+                // 그 외 기타 브라우저 표준 처리
+                encodedFilename = URLEncoder.encode(filename, "UTF-8");
+            }
+        } catch (UnsupportedEncodingException e) {
+            encodedFilename = filename; // 인코딩 실패 시 원본 반환
+        }
+        
+        // HTTP 응답 헤더에 들어갈 Content-Disposition 값 형태로 조립하여 반환
+        return "attachment; filename=" + encodedFilename;
+    }
+
+    // 실무 작동 테스트 예시
+    public static void main(String[] args) {
+        String originalFileName = "🚀 2026년_상반기_최종_보고서.pdf";
+        
+        // 크롬 브라우저에서 접속했다고 가정했을 때의 User-Agent 값
+        String chromeAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36";
+        
+        // 인코딩 결과 얻기
+        String headerValue = getDisposition(originalFileName, chromeAgent);
+        
+        System.out.println("┌────────────────────────────────────────────────────────────────────────┐");
+        System.out.println("  [원본 파일명]      : " + originalFileName);
+        System.out.println("  [HTTP 헤더 설정값] : " + headerValue);
+        System.out.println("└────────────────────────────────────────────────────────────────────────┘");
+        System.out.println("\n💡 실제 스프링(Spring)에서는 response.setHeader(\"Content-Disposition\", 헤더설정값); 형태로 사용합니다.");
+    }
+}

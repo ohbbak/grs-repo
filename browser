@@ -4,10 +4,10 @@ import java.net.URLEncoder;
 public class FileUtil {
 
     /**
-     * 브라우저 종류에 따라 한글 파일명이 깨지지 않도록 인코딩하는 메서드
+     * 브라우저 종류에 따라 한글 파일명이 깨지지 않도록 인코딩 메서드
      * @param filename 원본 한글 파일명 (예: "결과보고서.pdf")
      * @param userAgent 브라우저 정보 (HttpServletRequest.getHeader("User-Agent") 값)
-     * @return 인코딩된 파일명 문자열
+     * @return 인코딩된 파일명
      */
     public static String getDisposition(String filename, String userAgent) {
         String encodedFilename = "";

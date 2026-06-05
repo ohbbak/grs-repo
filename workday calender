@@ -1,0 +1,33 @@
+from datetime import datetime, timedelta
+
+def get_working_days_left(target_date_str):
+    # 오늘 날짜와 목표 날짜 설정
+    today = datetime.now().date()
+    target_date = datetime.strptime(target_date_str, "%Y-%m-%d").date()
+    
+    if target_date < today:
+        return "이미 지나간 일정입니다. 😅"
+        
+    working_days = 0
+    current_date = today
+    
+    # 오늘부터 목표 날짜까지 하루씩 더하며 체크
+    while current_date <= target_date:
+        # 0: 월, 1: 화, 2: 수, 3: 목, 4: 금, 5: 토, 6: 일
+        # 주말(토, 일)이 아닌 경우에만 카운트 증가
+        if current_date.weekday() < 5:
+            working_days += 1
+        current_date += timedelta(days=1)
+        
+    return working_days
+
+# --- 사용 예시 ---
+# 프로젝트 검수일 또는 마감일을 넣어보세요 (YYYY-MM-DD 형식)
+deadline = "2026-07-15" 
+
+result = get_working_days_left(deadline)
+
+print(f"📊 [프로젝트 일정 체크]")
+print(f"오늘 날짜: {datetime.now().strftime('%Y-%m-%d')}")
+print(f"마감 날짜: {deadline}")
+print(f"🔥 주말 제외하고 실제 일할 수 있는 날은 딱 '{result}일' 남았습니다!")

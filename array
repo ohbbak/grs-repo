@@ -12,7 +12,6 @@ temp = data[n - 1]
 for i in range(n - 1, 0, -1):
     data[i] = data[i - 1]
 
-# 저장해둔 마지막 값을 맨 앞으로 이동
 data[0] = temp
 
 # 3. 합계 계산
